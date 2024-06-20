@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualización de Grafos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <!-- Biblioteca de visualización de gráficos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+    <!-- Estilos de la biblioteca de visualización -->
+    <style>
+        #grafo_original,
+        #grafo_scc {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Visualización de Grafos</h1>
+
+    <form id="csvForm">
+        <label for="csv_file">Seleccionar archivo CSV:</label>
+        <select name="csv_file" id="csv_file">
+            <option value="prueba1.csv">Prueba_1</option>
+            <option value="prueba.csv">Prueba</option>
+            <option value="datos5k_limpio.csv">datos5k_limpio.csv</option>
+        </select>
+        <button type="submit">Ejecutar Algoritmo</button>
+    </form>
+
+    <h2>Grafo Original:</h2>
+    <div id="grafo_original"></div>
+
+    <h2>Grafo SCC:</h2>
+    <div id="grafo_scc"></div>
+
+    <script>
+        document.getElementById('csvForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            console.log(formData.get('csv_file'));
+            fetch('/', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+    // Actualizar el grafo original
+    var grafoOriginalData = data.grafo_original;
+
+    // Optimizar nodos: Añadir propiedad 'label' y 'color' si no existen
+    grafoOriginalData.nodes.forEach(node => {
+        if (!node.label) node.label = node.id.toString(); // Asegurar que cada nodo tenga un 'label'
+        if (!node.color) node.color = '#D2E5FF'; // Añadir color por defecto si no tiene
+    });
+
+    // Preparar los datos para vis.js
+    var grafoOriginalNodes = new vis.DataSet(grafoOriginalData.nodes);
+    var grafoOriginalEdges = new vis.DataSet(grafoOriginalData.edges);
+    var grafoOriginalContainer = document.getElementById('grafo_original');
+
+    // Configuración del grafo original
+    var grafoOriginalOptions = {
+        edges: {
+            arrows: {
+                to: { enabled: true, scaleFactor: 1 }
+            }
+        },
+        layout: {
+            improvedLayout: false
+        },
+        physics: {
+            enabled: true, // Habilitar física
+            barnesHut: {
+                gravitationalConstant: -2000,
+                centralGravity: 0.3,
+                springLength: 95,
+                springConstant: 0.04,
+                damping: 0.09,
+                avoidOverlap: 0.1
+            },
+            maxVelocity: 50,
+            minVelocity: 0.1,
+            solver: 'barnesHut',
+            timestep: 0.5,
+            adaptiveTimestep: true
+        }
+    };
+
+    // Inicializar el grafo con los datos y opciones
+    var grafoOriginalNetwork = new vis.Network(grafoOriginalContainer, { nodes: grafoOriginalNodes, edges: grafoOriginalEdges }, grafoOriginalOptions);
+})
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+
+</html>
