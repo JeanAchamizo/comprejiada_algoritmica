@@ -5,7 +5,7 @@ import csv
 nodo_lista = {}
 
 # Leer el archivo CSV
-with open('datos_limpio.csv', 'r') as file:
+with open('top_5000_nodes.csv', 'r') as file:
     reader = csv.reader(file, delimiter=',')
     for row in reader:
         node = row[0]
@@ -19,10 +19,12 @@ claves = nodo_lista.keys()
 # Iterar sobre cada clave y su lista de adyacencia
 for nodo, lista_adyacencia in nodo_lista.items():
     # Filtrar la lista de adyacencia para eliminar los valores que no son claves en el diccionario
-    nodo_lista[nodo] = [valor for valor in lista_adyacencia if valor in claves]
+    #nodo_lista[nodo] = [valor for valor in lista_adyacencia if valor in claves]
+    # Filtrar la lista de adyacencia para eliminar los valores que no son claves en el diccionario y ademas que las claves no esten en su propia lista de adyacencia
+    nodo_lista[nodo] = [valor for valor in lista_adyacencia if valor in claves and valor != nodo]
 
 # Escribir el diccionario actualizado en un archivo CSV
-with open('datos_limpio_limpio.csv', 'w', newline='') as file:
+with open('top_5000_nodes.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     for nodo, lista_adyacencia in nodo_lista.items():
         writer.writerow([nodo] + lista_adyacencia)

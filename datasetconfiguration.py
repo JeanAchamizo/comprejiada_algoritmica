@@ -39,9 +39,9 @@ twitter_adj_list = dataframe_to_adjacency_list(twitter, "start_node", "end_node"
 
 def reduce_to_top_nodes(adjacency_list, top_n=5000):
     # Ordenar los nodos por el tamaño de sus listas de adyacencia de forma descendente -> resverse=False
-    sorted_nodes = sorted(adjacency_list.items(), key=lambda x: len(x[1]), reverse=False)
+    sorted_nodes = sorted(adjacency_list.items(), key=lambda x: len(x[1]), reverse=True)
     
-    # Tomar los primeros top_n nodos
+    # Tomar los primeros top_n nodos -> 10000 a 20000
     top_nodes = sorted_nodes[10000:20000]
     
     # Crear un nuevo diccionario con los nodos seleccionados
@@ -61,4 +61,4 @@ top_5000_adj_list = reduce_to_top_nodes(twitter_adj_list, top_n=5000)
 # Guardar los nodos principales en un archivo CSV
 save_adjacency_list_to_csv(top_5000_adj_list, 'top_5000_nodes.csv')
 
-
+print("termine")
