@@ -3,9 +3,9 @@ import csv
 from collections import defaultdict
 import networkx as nx
 from pyvis.network import Network
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QLabel, QTableWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QLabel, QTableWidget, QTableWidgetItem,QSizePolicy
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QUrl, Qt
 import os
 
 class GraphApp(QWidget):
@@ -15,46 +15,60 @@ class GraphApp(QWidget):
     
     def initUI(self):
         self.setWindowTitle('Grafo de los datos del archivo')
-        self.resize(1200, 800)
+        self.resize(1200, 600)
+        self.setStyleSheet('background-color: #333; color: white;')
+        # Layout principal vertical
+        mainLayout = QVBoxLayout()
+        mainLayout.setContentsMargins(10, 10, 10, 10)  # Eliminar márgenes
+        mainLayout.setSpacing(0)  # Eliminar espacio entre widgets
         
-        # Layout principal horizontal
-        mainLayout = QHBoxLayout()
-        
-        # Layout para el lado izquierdo (subir archivo y botones)
-        leftLayout = QVBoxLayout()
-        
-        self.label = QLabel('Sube tu archivo:')
-        leftLayout.addWidget(self.label)
-        
+
+        # Cambiar el layout de los botones a QHBoxLayout para que estén lado a lado
+        buttonsLayout = QHBoxLayout()
+        buttonsLayout.setSpacing(0)  # Eliminar espacio entre widgets
+        self.label = QLabel('Sube tu archivo:')        
+        buttonsLayout.addWidget(self.label)
         self.uploadButton = QPushButton('Enviar archivo')
         self.uploadButton.clicked.connect(self.loadCSV)
-        leftLayout.addWidget(self.uploadButton)
-        
+        buttonsLayout.addWidget(self.uploadButton)
         self.sccButton = QPushButton('Encontrar componentes fuertemente conexos')
         self.sccButton.clicked.connect(self.findSCCs)
-        leftLayout.addWidget(self.sccButton)
+        buttonsLayout.addWidget(self.sccButton)
+        # Agregar el layout de botones al layout principal
+        mainLayout.addLayout(buttonsLayout)
+
+        # Layout horizontal para las gráficas
+        graphsLayout = QHBoxLayout()
+        graphsLayout.setSpacing(0)  # Eliminar espacio entre layouts
+        graphsLayout.setContentsMargins(0, 0, 0, 0)  # Eliminar márgenes
         
-        # Layout para el lado derecho (visualización de los grafos)
-        rightLayout = QVBoxLayout()
-        
+        # Layout para la gráfica original
+        originalGraphLayout = QVBoxLayout()
+        originalGraphLayout.setSpacing(0)  # Eliminar espacio entre widgets
+        originalGraphLayout.setContentsMargins(0, 0, 5, 0)  # Eliminar márgenes
         self.graphLabel = QLabel('Grafo de los datos del archivo:')
-        rightLayout.addWidget(self.graphLabel)
-        
+        self.graphLabel.setFixedSize(600, 23) # Establecer tamaño fijo para el label
+        originalGraphLayout.addWidget(self.graphLabel)
         self.webViewOriginal = QWebEngineView()
-        rightLayout.addWidget(self.webViewOriginal)
+        originalGraphLayout.addWidget(self.webViewOriginal)
+        graphsLayout.addLayout(originalGraphLayout)
         
+        # Layout para la gráfica de los SCCs
+        sccGraphLayout = QVBoxLayout()
+        sccGraphLayout.setSpacing(0)  # Eliminar espacio entre widgets
+        sccGraphLayout.setContentsMargins(0, 0, 0, 0)  # Eliminar márgenes
         self.sccGraphLabel = QLabel('Grafo de los componentes fuertemente conexos:')
-        rightLayout.addWidget(self.sccGraphLabel)
-        
+        self.sccGraphLabel.setFixedSize(600, 23)  # Establecer tamaño fijo para el label
+        sccGraphLayout.addWidget(self.sccGraphLabel)
         self.webViewSCC = QWebEngineView()
-        rightLayout.addWidget(self.webViewSCC)
+        sccGraphLayout.addWidget(self.webViewSCC)
+        graphsLayout.addLayout(sccGraphLayout)
         
-        # Agregar layouts izquierdo y derecho al layout principal
-        mainLayout.addLayout(leftLayout)
-        mainLayout.addLayout(rightLayout)
+        # Agregar el layout de las gráficas al layout principal
+        mainLayout.addLayout(graphsLayout)
         
         self.setLayout(mainLayout)
-    
+        
     def loadCSV(self):
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", "CSV Files (*.csv);;All Files (*)", options=options)

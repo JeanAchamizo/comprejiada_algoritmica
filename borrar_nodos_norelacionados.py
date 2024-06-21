@@ -5,6 +5,7 @@ import csv
 nodo_lista = {}
 
 # Leer el archivo CSV
+
 with open('top_5000_nodes.csv', 'r') as file:
     reader = csv.reader(file, delimiter=',')
     for row in reader:
@@ -24,6 +25,7 @@ for nodo, lista_adyacencia in nodo_lista.items():
     nodo_lista[nodo] = [valor for valor in lista_adyacencia if valor in claves and valor != nodo]
 
 # Escribir el diccionario actualizado en un archivo CSV
+
 with open('top_5000_nodes.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     for nodo, lista_adyacencia in nodo_lista.items():

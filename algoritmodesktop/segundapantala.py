@@ -12,7 +12,7 @@ class GraphApp(QWidget):
         self.initUI()
     
     def initUI(self):
-        self.setWindowTitle('Grafo de los datos del archivo')
+        self.setWindowTitle('Grafo')
         
         layout = QVBoxLayout()
         
