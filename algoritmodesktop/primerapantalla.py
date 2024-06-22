@@ -152,7 +152,8 @@ class GraphApp(QWidget):
             writer = csv.writer(file)
             for scc in sccs:
                 writer.writerow(scc)
-
+        print("SCCs guardados en sccs.csv")
+        
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = GraphApp()
