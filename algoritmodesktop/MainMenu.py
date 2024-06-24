@@ -1,9 +1,10 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel
 from PyQt5.QtCore import Qt
 import os
 from datasetconfiguration import DatasetConfiguration
 from AboutProgram import AboutProgram
+from StronglyConnectedComponentsApp import StronglyConnectedComponentsApp  # Importa la nueva clase
 
 class MainMenu(QWidget):
     def __init__(self):
@@ -18,7 +19,7 @@ class MainMenu(QWidget):
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignCenter)
         
-        self.title = QLabel('know your business', self)
+        self.title = QLabel('Know Your Business', self)
         self.title.setStyleSheet('font-size: 24px; font-weight: bold;')
         layout.addWidget(self.title)
         
@@ -37,12 +38,21 @@ class MainMenu(QWidget):
         self.button3.clicked.connect(self.aboutProgram)
         layout.addWidget(self.button3)
         
+        self.button4 = QPushButton('Componentes Fuertemente Conexos', self)  # Nuevo botón
+        self.button4.setStyleSheet('padding: 10px; font-size: 16px;')
+        self.button4.clicked.connect(self.showSCCApp)
+        layout.addWidget(self.button4)
+        
         self.setLayout(layout)
     
     def showStronglyConnectedComponents(self):
         # Ejecutar el código para mostrar datos fuertemente conexos
-        os.system('python primerapantalla.py')  # ruta de la oantalla principal
+        os.system('python primerapantalla.py')  # Ruta de la pantalla principal
         
+    def showSCCApp(self):
+        self.sccApp = StronglyConnectedComponentsApp()
+        self.sccApp.show()
+    
     def selectData(self):
         self.datasetConfig = DatasetConfiguration()
         self.datasetConfig.show()
