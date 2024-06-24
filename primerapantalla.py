@@ -44,8 +44,16 @@ class GraphApp(QWidget):
         self.graphLabel.setFixedSize(600, 23)
         originalGraphLayout.addWidget(self.graphLabel)
         self.webViewOriginal = QWebEngineView()
+        
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        # Construir la ruta completa al archivo HTML
+        html_file_path = os.path.join(current_directory, "index.html")
+
+
+
         originalGraphLayout.addWidget(self.webViewOriginal)
         graphsLayout.addLayout(originalGraphLayout)
+        self.webViewOriginal.setUrl(QUrl.fromLocalFile(html_file_path))
         
         sccGraphLayout = QVBoxLayout()
         sccGraphLayout.setSpacing(0)
@@ -97,8 +105,14 @@ class GraphApp(QWidget):
     def plotGraph(self, graph, web_view, file_name):
         net = Network(notebook=True, height="750px", width="100%", bgcolor="#222222", font_color="white", directed=True)
         net.from_nx(graph)    
+        
+        # Obtener la ruta absoluta del directorio actual
+        current_directory = os.path.dirname(os.path.abspath(__file__))
 
-        temp_file = os.path.join(os.getcwd(), file_name)
+        # Construir la ruta completa al archivo HTML
+        html_file_path = os.path.join(current_directory,file_name)
+        print(html_file_path)
+        temp_file = os.path.join(os.getcwd(), html_file_path)
         net.save_graph(temp_file)
         
         web_view.setUrl(QUrl.fromLocalFile(temp_file))
